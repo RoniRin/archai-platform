@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Планировщик ArchAI — Проекты</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:#e5e1dd;
+      color:#222;
+    }
+
+    /* Шапка */
+    .topbar {
+      height:56px;
+      background:#111;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 24px;
+    }
+    .topbar-left {
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .logo-square {
+      width:18px;
+      height:18px;
+      border-radius:4px;
+      background:#fff;
+    }
+    .app-name { font-size:14px; font-weight:500; }
+    .nav {
+      display:flex;
+      gap:20px;
+      font-size:13px;
+    }
+    .nav a {
+      color:#f9fafb;
+      text-decoration:none;
+      opacity:.8;
+    }
+    .nav a.active { opacity:1; font-weight:500; }
+
+    /* Сетка страницы */
+    .page {
+      display:grid;
+      grid-template-columns:260px 1fr;
+      gap:16px;
+      max-width:1200px;
+      margin:16px auto 32px;
+      padding:0 16px;
+    }
+
+    /* Левая колонка — проекты */
+    .sidebar {
+      background:#f6f4f1;
+      border-radius:8px;
+      padding:16px 14px;
+      box-shadow:0 0 0 1px rgba(0,0,0,0.03);
+    }
+    .sidebar-title {
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:10px;
+    }
+    .project-list {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .project-card {
+      background:#ffffff;
+      border-radius:6px;
+      padding:8px;
+      box-shadow:0 0 0 1px rgba(0,0,0,0.04);
+      cursor:pointer;
+      transition:box-shadow .15s, transform .15s;
+    }
+    .project-card:hover {
+      box-shadow:0 4px 10px rgba(0,0,0,0.08);
+      transform:translateY(-1px);
+    }
+    .project-thumb {
+      width:100%;
+      height:110px;
+      border-radius:4px;
+      background:#d0cbc4;
+      margin-bottom:6px;
+    }
+    .project-name {
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:2px;
+    }
+    .project-date {
+      font-size:11px;
+      color:#666;
+    }
+
+    /* Правая часть */
+    .content {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .compare-row {
+      display:grid;
+      grid-template-columns:1.2fr 1.2fr;
+      gap:16px;
+    }
+
+    .compare-title {
+      font-size:16px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+
+    .compare-card {
+      background:#f6f4f1;
+      border-radius:8px;
+      padding:16px 18px;
+      box-shadow:0 0 0 1px rgba(0,0,0,0.03);
+      display:flex;
+      flex-direction:column;
+      min-height:220px;
+    }
+    .compare-header {
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+    .compare-sub {
+      font-size:12px;
+      color:#666;
+      max-width:90%;
+    }
+    .compare-placeholder {
+      flex:1;
+      margin-top:12px;
+      border-radius:6px;
+      border:1px dashed #d0cbc4;
+      background:#ffffff;
+    }
+
+    /* График */
+    .chart-card {
+      background:#f6f4f1;
+      border-radius:8px;
+      padding:16px 18px 20px;
+      box-shadow:0 0 0 1px rgba(0,0,0,0.03);
+    }
+    .chart-title {
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:10px;
+    }
+    .chart {
+      height:200px;
+      position:relative;
+      padding-left:40px;
+      padding-top:10px;
+    }
+    .chart-axis {
+      position:absolute;
+      left:32px;
+      top:0;
+      bottom:10px;
+      width:2px;
+      background:#111827;
+    }
+    .chart-row {
+      display:flex;
+      align-items:center;
+      gap:4px;
+      margin:8px 0;
+    }
+    .chart-label {
+      position:absolute;
+      left:0;
+      font-size:11px;
+      color:#444;
+      transform:translateY(-50%);
+    }
+    .bar-dark {
+      height:22px;
+      background:#111827;
+      border-radius:0 4px 4px 0;
+    }
+    .bar-orange {
+      height:22px;
+      background:#e1503b;
+      border-radius:0 4px 4px 0;
+    }
+
+    @media (max-width:960px){
+      .page {
+        grid-template-columns:1fr;
+      }
+      .sidebar {
+        order:2;
+      }
+      .content {
+        order:1;
+      }
+    }
+    @media (max-width:760px){
+      .compare-row {
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo-square"></div>
+    <span class="app-name">Планировщик ArchAI</span>
+  </div>
+  <nav class="nav">
+    <a href="#" class="active">Панельные</a>
+    <a href="#">Проекты</a>
+    <a href="#">Настройки</a>
+  </nav>
+</header>
+
+<main class="page">
+  <!-- Левая колонка: список проектов -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Ваши проекты</div>
+    <div class="project-list">
+      <div class="project-card">
+        <div class="project-thumb"></div>
+        <div class="project-name">Современная квартира</div>
+        <div class="project-date">Создано: 10 января 2023 г.</div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb"></div>
+        <div class="project-name">Офис</div>
+        <div class="project-date">Создано: 5 февраля 2023 г.</div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb"></div>
+        <div class="project-name">Квартира‑студия</div>
+        <div class="project-date">Создано: 12 марта 2023 г.</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Правая часть: сравнение и график -->
+  <section class="content">
+    <div>
+      <div class="compare-title">Сравнить проекты</div>
+      <div class="compare-row">
+        <article class="compare-card">
+          <div class="compare-header">Семейный дом</div>
+          <div class="compare-sub">
+            Проект просторного семейного дома с четырьмя спальнями и
+            большим общим пространством.
+          </div>
+          <div class="compare-placeholder"></div>
+        </article>
+
+        <article class="compare-card">
+          <div class="compare-header">Городской таунхаус</div>
+          <div class="compare-sub">
+            Многоуровневый таунхаус с элегантным интерьером и террасой на крыше.
+          </div>
+          <div class="compare-placeholder"></div>
+        </article>
+      </div>
+    </div>
+
+    <section class="chart-card">
+      <div class="chart-title">Сравнение ключевых метрик</div>
+      <div class="chart">
+        <div class="chart-axis"></div>
+
+        <!-- 1-я строка -->
+        <div class="chart-row" style="margin-top:14px;">
+          <span class="chart-label" style="top:16px;">Метрика 1</span>
+          <div class="bar-dark"   style="width:120px;"></div>
+          <div class="bar-orange" style="width:160px;"></div>
+        </div>
+
+        <!-- 2-я строка -->
+        <div class="chart-row">
+          <span class="chart-label" style="top:56px;">Метрика 2</span>
+          <div class="bar-dark"   style="width:180px;"></div>
+          <div class="bar-orange" style="width:240px;"></div>
+        </div>
+
+        <!-- 3-я строка -->
+        <div class="chart-row">
+          <span class="chart-label" style="top:96px;">Метрика 3</span>
+          <div class="bar-dark"   style="width:90px;"></div>
+          <div class="bar-orange" style="width:200px;"></div>
+        </div>
+
+        <!-- 4-я строка -->
+        <div class="chart-row">
+          <span class="chart-label" style="top:136px;">Метрика 4</span>
+          <div class="bar-dark"   style="width:110px;"></div>
+          <div class="bar-orange" style="width:320px;"></div>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+</body>
+</html>

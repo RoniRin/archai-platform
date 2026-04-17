@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Профиль — ArchAItect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/profile.css">
+  <link rel="stylesheet" href="../css/toasts.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-title">
+    <div class="topbar-logo"></div>
+    <span>ArchAItect</span>
+  </div>
+  <div class="topbar-user">
+    <span>user@archai.com</span>
+    <div class="avatar-mini">AA</div>
+  </div>
+</header>
+
+<main class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Профиль пользователя</div>
+      <div class="page-subtitle">Управляйте личными данными и настройками аккаунта</div>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn-main" onclick="window.location.href='../index.html'">
+        <i class="fas fa-home"></i> На главную
+      </button>
+      <button class="btn-outline" onclick="window.location.href='../pages/login.html'">
+        <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+      </button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Левая колонка: профиль + проекты -->
+    <section>
+      <div class="card">
+        <div class="card-title">Основная информация</div>
+
+        <div class="profile-main">
+          <div class="profile-avatar">AA</div>
+          <div class="profile-info">
+            <h2>Алексей Архитекторов</h2>
+            <div class="profile-meta">
+              <span><i class="fas fa-calendar-alt"></i> На платформе с 2024</span>
+              <span><i class="fas fa-layer-group"></i> 27 проектов</span>
+            </div>
+          </div>
+        </div>
+
+        <form class="profile-form" autocomplete="off">
+          <div class="field">
+            <label><i class="fas fa-user"></i> Имя</label>
+            <input type="text" value="Алексей">
+          </div>
+          <div class="field">
+            <label><i class="fas fa-user"></i> Фамилия</label>
+            <input type="text" value="Архитекторов">
+          </div>
+          <div class="field">
+            <label><i class="fas fa-envelope"></i> Электронная почта</label>
+            <input type="email" value="user@archai.com">
+          </div>
+        </form>
+
+        <div class="profile-actions">
+          <button type="button" class="btn-primary" id="saveProfileBtn">
+            <i class="fas fa-save"></i> Сохранить изменения
+          </button>
+          <button type="button" class="btn-ghost" id="changePasswordBtn">
+            <i class="fas fa-lock"></i> Изменить пароль
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Последние проекты</div>
+        <div class="projects-list">
+          <div class="project-item">
+            <div class="project-top">
+              <div class="project-name">ЖК «Северный квартал»</div>
+              <div class="project-date">Обновлён 12.12.2025</div>
+            </div>
+            <div class="project-meta">12 секций · класс комфорт · 18–25 этажей</div>
+            <div class="project-actions">
+              <button class="btn-small"><i class="fas fa-eye"></i> Открыть</button>
+              <button class="btn-small"><i class="fas fa-download"></i> PDF</button>
+              <button class="btn-small"><i class="fas fa-chart-bar"></i> Статистика</button>
+            </div>
+          </div>
+          <div class="project-item">
+            <div class="project-top">
+              <div class="project-name">ЖК «Панорама»</div>
+              <div class="project-date">Обновлён 05.12.2025</div>
+            </div>
+            <div class="project-meta">Башни + угловые секции · 3 варианта планировок</div>
+            <div class="project-actions">
+              <button class="btn-small"><i class="fas fa-eye"></i> Открыть</button>
+              <button class="btn-small"><i class="fas fa-download"></i> PDF</button>
+              <button class="btn-small"><i class="fas fa-chart-bar"></i> Статистика</button>
+            </div>
+          </div>
+          <div class="project-item">
+            <div class="project-top">
+              <div class="project-name">Бизнес-центр «Сфера»</div>
+              <div class="project-date">Обновлён 28.11.2025</div>
+            </div>
+            <div class="project-meta">25 этажей · подземный паркинг · 4 входа</div>
+            <div class="project-actions">
+              <button class="btn-small"><i class="fas fa-eye"></i> Открыть</button>
+              <button class="btn-small"><i class="fas fa-download"></i> PDF</button>
+              <button class="btn-small"><i class="fas fa-chart-bar"></i> Статистика</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Правая колонка: статистика + настройки -->
+    <section>
+      <div class="card">
+        <div class="card-title">Статистика</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon projects">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-info">
+              <h3>27</h3>
+              <p>Созданных проектов</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon time">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+              <h3>148 ч</h3>
+              <p>В работе на платформе</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon efficiency">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="stat-info">
+              <h3>94%</h3>
+              <p>Эффективность планировок</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon downloads">
+              <i class="fas fa-download"></i>
+            </div>
+            <div class="stat-info">
+              <h3>156</h3>
+              <p>Скачиваний чертежей</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Настройки</div>
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Тёмная тема</h4>
+              <p>Переключить интерфейс</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="darkThemeToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Двухфакторная аутентификация</h4>
+              <p>Повышенная безопасность</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="twoFactorToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Действия</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <button class="btn-ghost" style="width: 100%;" id="helpBtn">
+            <i class="fas fa-question-circle"></i> Помощь и поддержка
+          </button>
+          <button class="btn-ghost" style="width: 100%; color: #e3503e; border-color: #e3503e;" id="deleteAccountBtn">
+            <i class="fas fa-trash-alt"></i> Удалить аккаунт
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Модальное окно для изменения пароля -->
+<div class="modal" id="passwordModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="fas fa-lock"></i> Изменить пароль</h2>
+      <button class="modal-close" id="closePasswordModal">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="changePasswordForm">
+        <div class="field">
+          <label><i class="fas fa-lock"></i> Текущий пароль</label>
+          <div class="password-field">
+            <input type="password" id="currentPassword" placeholder="Введите текущий пароль" required>
+            <button type="button" class="toggle-password" data-target="currentPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="field">
+          <label><i class="fas fa-lock"></i> Новый пароль</label>
+          <div class="password-field">
+            <input type="password" id="newPassword" placeholder="Введите новый пароль" required>
+            <button type="button" class="toggle-password" data-target="newPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="password-strength">
+            <div class="strength-meter">
+              <div class="strength-fill" id="passwordStrength"></div>
+            </div>
+            <span class="strength-text" id="strengthText">Слабый</span>
+          </div>
+        </div>
+        
+        <div class="field">
+          <label><i class="fas fa-lock"></i> Подтвердите новый пароль</label>
+          <div class="password-field">
+            <input type="password" id="confirmPassword" placeholder="Повторите новый пароль" required>
+            <button type="button" class="toggle-password" data-target="confirmPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="passwordMatch" class="match-status"></div>
+        </div>
+        
+        <div class="password-requirements">
+          <h4><i class="fas fa-info-circle"></i> Требования к паролю:</h4>
+          <ul>
+            <li id="reqLength"><i class="fas fa-check-circle"></i> Минимум 8 символов</li>
+            <li id="reqUppercase"><i class="fas fa-check-circle"></i> Хотя бы одна заглавная буква</li>
+            <li id="reqLowercase"><i class="fas fa-check-circle"></i> Хотя бы одна строчная буква</li>
+            <li id="reqNumber"><i class="fas fa-check-circle"></i> Хотя бы одна цифра</li>
+            <li id="reqSpecial"><i class="fas fa-check-circle"></i> Хотя бы один спецсимвол (!@#$%^&*)</li>
+          </ul>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="cancelPasswordChange">Отмена</button>
+          <button type="submit" class="btn-primary" id="savePasswordBtn">
+            <i class="fas fa-save"></i> Сохранить новый пароль
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Элементы
+    const passwordModal = document.getElementById('passwordModal');
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const closePasswordModal = document.getElementById('closePasswordModal');
+    const cancelPasswordChange = document.getElementById('cancelPasswordChange');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    const savePasswordBtn = document.getElementById('savePasswordBtn');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    
+    // Поля ввода
+    const currentPassword = document.getElementById('currentPassword');
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    // Элементы для отображения информации
+    const passwordStrength = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
+    
+    // Требования к паролю
+    const reqLength = document.getElementById('reqLength');
+    const reqUppercase = document.getElementById('reqUppercase');
+    const reqLowercase = document.getElementById('reqLowercase');
+    const reqNumber = document.getElementById('reqNumber');
+    const reqSpecial = document.getElementById('reqSpecial');
+    
+    // Открытие модального окна
+    if (changePasswordBtn) {
+        changePasswordBtn.addEventListener('click', function() {
+            passwordModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Сброс формы
+            resetPasswordForm();
+        });
+    }
+    
+    // Закрытие модального окна
+    function closeModal() {
+        passwordModal.classList.remove('active');
+        document.body.style.overflow = '';
+        resetPasswordForm();
+    }
+    
+    if (closePasswordModal) {
+        closePasswordModal.addEventListener('click', closeModal);
+    }
+    
+    if (cancelPasswordChange) {
+        cancelPasswordChange.addEventListener('click', closeModal);
+    }
+    
+    // Закрытие по клику вне окна
+    passwordModal.addEventListener('click', function(e) {
+        if (e.target === passwordModal) {
+            closeModal();
+        }
+    });
+    
+    // Закрытие по Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && passwordModal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+    
+    // Переключение видимости пароля
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+    
+    // Проверка сложности нового пароля
+    if (newPassword) {
+        newPassword.addEventListener('input', checkPasswordStrength);
+        newPassword.addEventListener('input', checkPasswordRequirements);
+    }
+    
+    // Проверка совпадения паролей
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+    }
+    
+    // Функция проверки сложности пароля
+    function checkPasswordStrength() {
+        const password = newPassword.value;
+        let strength = 0;
+        
+        // Длина пароля
+        if (password.length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        
+        // Наличие разных типов символов
+        if (/[A-Z]/.test(password)) strength++; // Заглавные буквы
+        if (/[a-z]/.test(password)) strength++; // Строчные буквы
+        if (/[0-9]/.test(password)) strength++; // Цифры
+        if (/[^A-Za-z0-9]/.test(password)) strength++; // Спецсимволы
+        
+        // Обновление индикатора
+        passwordStrength.className = 'strength-fill';
+        strengthText.className = 'strength-text';
+        
+        if (strength <= 2) {
+            passwordStrength.classList.add('weak');
+            strengthText.classList.add('weak');
+            strengthText.textContent = 'Слабый';
+        } else if (strength <= 4) {
+            passwordStrength.classList.add('medium');
+            strengthText.classList.add('medium');
+            strengthText.textContent = 'Средний';
+        } else {
+            passwordStrength.classList.add('strong');
+            strengthText.classList.add('strong');
+            strengthText.textContent = 'Сильный';
+        }
+    }
+    
+    // Функция проверки требований к паролю
+    function checkPasswordRequirements() {
+        const password = newPassword.value;
+        
+        // Проверка каждого требования
+        const requirements = [
+            { element: reqLength, test: password.length >= 8, text: 'Минимум 8 символов' },
+            { element: reqUppercase, test: /[A-Z]/.test(password), text: 'Хотя бы одна заглавная буква' },
+            { element: reqLowercase, test: /[a-z]/.test(password), text: 'Хотя бы одна строчная буква' },
+            { element: reqNumber, test: /[0-9]/.test(password), text: 'Хотя бы одна цифра' },
+            { element: reqSpecial, test: /[^A-Za-z0-9]/.test(password), text: 'Хотя бы один спецсимвол (!@#$%^&*)' }
+        ];
+        
+        requirements.forEach(req => {
+            if (req.test) {
+                req.element.classList.add('valid');
+                req.element.classList.remove('invalid');
+                req.element.innerHTML = `<i class="fas fa-check-circle"></i> ${req.text}`;
+            } else {
+                req.element.classList.add('invalid');
+                req.element.classList.remove('valid');
+                req.element.innerHTML = `<i class="far fa-circle"></i> ${req.text}`;
+            }
+        });
+    }
+    
+    // Функция проверки совпадения паролей
+    function checkPasswordMatch() {
+        const newPass = newPassword.value;
+        const confirmPass = confirmPassword.value;
+        
+        if (confirmPass === '') {
+            passwordMatch.style.display = 'none';
+            passwordMatch.className = 'match-status';
+            return;
+        }
+        
+        if (newPass === confirmPass) {
+            passwordMatch.style.display = 'block';
+            passwordMatch.className = 'match-status matching';
+            passwordMatch.innerHTML = '<i class="fas fa-check"></i> Пароли совпадают';
+        } else {
+            passwordMatch.style.display = 'block';
+            passwordMatch.className = 'match-status not-matching';
+            passwordMatch.innerHTML = '<i class="fas fa-times"></i> Пароли не совпадают';
+        }
+    }
+    
+    // Сброс формы
+    function resetPasswordForm() {
+        if (changePasswordForm) {
+            changePasswordForm.reset();
+        }
+        
+        // Сброс индикаторов
+        passwordStrength.className = 'strength-fill';
+        strengthText.className = 'strength-text';
+        strengthText.textContent = 'Слабый';
+        passwordMatch.style.display = 'none';
+        passwordMatch.className = 'match-status';
+        
+        // Сброс требований
+        const requirements = [reqLength, reqUppercase, reqLowercase, reqNumber, reqSpecial];
+        requirements.forEach(req => {
+            req.classList.remove('valid', 'invalid');
+            req.innerHTML = `<i class="far fa-circle"></i> ${req.textContent.replace(/^.*? /, '')}`;
+        });
+    }
+    
+    // Обработка отправки формы изменения пароля
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Валидация
+            if (!validatePasswordForm()) {
+                return;
+            }
+            
+            // Показ индикатора загрузки
+            const originalText = savePasswordBtn.innerHTML;
+            savePasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+            savePasswordBtn.disabled = true;
+            
+            // Имитация отправки на сервер
+            setTimeout(() => {
+                // Восстановление кнопки
+                savePasswordBtn.innerHTML = originalText;
+                savePasswordBtn.disabled = false;
+                
+                // Закрытие модального окна
+                closeModal();
+                
+                // Показать уведомление об успехе
+                showNotification('Пароль успешно изменён!', 'success');
+                
+                console.log('Пароль изменён:', {
+                    current: currentPassword.value,
+                    new: newPassword.value
+                });
+            }, 2000);
+        });
+    }
+    
+    // Функция валидации формы пароля
+    function validatePasswordForm() {
+        const currentPass = currentPassword.value.trim();
+        const newPass = newPassword.value.trim();
+        const confirmPass = confirmPassword.value.trim();
+        
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Проверка текущего пароля
+        if (currentPass.length < 6) {
+            currentPassword.classList.add('invalid');
+            errorMessage = 'Текущий пароль должен содержать минимум 6 символов';
+            isValid = false;
+        } else {
+            currentPassword.classList.remove('invalid');
+            currentPassword.classList.add('valid');
+        }
+        
+        // Проверка нового пароля
+        if (newPass.length < 8) {
+            newPassword.classList.add('invalid');
+            errorMessage = 'Новый пароль должен содержать минимум 8 символов';
+            isValid = false;
+        } else if (!/[A-Z]/.test(newPass) || !/[a-z]/.test(newPass) || 
+                   !/[0-9]/.test(newPass) || !/[^A-Za-z0-9]/.test(newPass)) {
+            newPassword.classList.add('invalid');
+            errorMessage = 'Новый пароль не соответствует требованиям безопасности';
+            isValid = false;
+        } else {
+            newPassword.classList.remove('invalid');
+            newPassword.classList.add('valid');
+        }
+        
+        // Проверка совпадения паролей
+        if (newPass !== confirmPass) {
+            confirmPassword.classList.add('invalid');
+            errorMessage = 'Новые пароли не совпадают';
+            isValid = false;
+        } else {
+            confirmPassword.classList.remove('invalid');
+            confirmPassword.classList.add('valid');
+        }
+        
+        // Проверка, что новый пароль не совпадает с текущим
+        if (newPass === currentPass) {
+            newPassword.classList.add('invalid');
+            errorMessage = 'Новый пароль должен отличаться от текущего';
+            isValid = false;
+        }
+        
+        // Показ ошибки
+        if (!isValid && errorMessage) {
+            showNotification(errorMessage, 'error');
+        }
+        
+        return isValid;
+    }
+    
+    // Обработчик для кнопки "Сохранить изменения" профиля
+    if (saveProfileBtn) {
+        saveProfileBtn.addEventListener('click', function() {
+            // Показ индикатора загрузки
+            const originalText = saveProfileBtn.innerHTML;
+            saveProfileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+            saveProfileBtn.disabled = true;
+            
+            // Имитация сохранения
+            setTimeout(() => {
+                saveProfileBtn.innerHTML = originalText;
+                saveProfileBtn.disabled = false;
+                showNotification('Изменения профиля сохранены!', 'success');
+            }, 1500);
+        });
+    }
+    
+    // Обработчики для других кнопок
+    const logoutBtn = document.querySelector('.btn-outline');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
+                showNotification('Вы вышли из аккаунта', 'info');
+                setTimeout(() => {
+                    window.location.href = 'pages/login.html';
+                }, 1000);
+            }
+        });
+    }
+    
+    const helpBtn = document.getElementById('helpBtn');
+    if (helpBtn) {
+        helpBtn.addEventListener('click', function() {
+            showNotification('Скоро появится раздел помощи', 'info');
+        });
+    }
+    
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.')) {
+                showNotification('Запрос на удаление аккаунта отправлен', 'warning');
+            }
+        });
+    }
+    
+    // Переключатели настроек
+    const darkThemeToggle = document.getElementById('darkThemeToggle');
+    const twoFactorToggle = document.getElementById('twoFactorToggle');
+    
+    if (darkThemeToggle) {
+        darkThemeToggle.addEventListener('change', function() {
+            showNotification(this.checked ? 'Тёмная тема включена' : 'Тёмная тема выключена', 'info');
+        });
+    }
+    
+    if (twoFactorToggle) {
+        twoFactorToggle.addEventListener('change', function() {
+            if (this.checked) {
+                showNotification('Двухфакторная аутентификация включена', 'success');
+            } else {
+                showNotification('Двухфакторная аутентификация выключена', 'warning');
+            }
+        });
+    }
+    
+    // Функция для показа уведомлений
+    function showNotification(message, type = 'info') {
+        // Создаем контейнер для уведомлений, если его нет
+        let container = document.getElementById('notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+        
+        // Создаем уведомление
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        // Иконки для разных типов уведомлений
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+        
+        notification.innerHTML = `
+            <div class="notification-icon">
+                <i class="${icons[type] || icons.info}"></i>
+            </div>
+            <div class="notification-content">
+                ${message}
+            </div>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Автоматическое удаление через 5 секунд
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход — ArchAItect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/toasts.css">
+  <style>
+    /* Индикатор загрузки на кнопке */
+    .btn-primary.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .btn-primary.loading i.fa-spinner {
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-icon"></div>
+      <span>ArchAItect</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="left-panel">
+      <img src="assets/images/cubrub.gif" alt="cub rub">
+    </section>
+
+    <section class="right-panel">
+      <div class="login-card">
+        <h1 class="login-title">Авторизация</h1>
+
+        <form id="loginForm">
+          <div class="field">
+            <label>
+              <i class="fas fa-envelope"></i>
+              Электронная почта для доступа
+            </label>
+            <input type="email" id="email" placeholder="user@archai.com" required class="form-input" autocomplete="email">
+          </div>
+
+          <div class="field">
+            <label>
+              <i class="fas fa-lock"></i>
+              Пароль
+            </label>
+            <input type="password" id="password" placeholder="*************" required class="form-input" autocomplete="current-password">
+          </div>
+
+          <div class="forgot-row">
+            <a href="forgot-password.html">Забыли пароль?</a>
+          </div>
+
+          <button type="submit" class="btn-primary" id="loginButton">
+            <i class="fas fa-sign-in-alt"></i>
+            Войти
+          </button>
+
+          <div class="secondary-actions">
+            <span>Нет аккаунта?</span>
+            <button type="button" class="btn-ghost" onclick="window.location.href='/register'">
+              <i class="fas fa-user-plus"></i>
+              <span>Зарегистрироваться</span>
+            </button>
+          </div>
+
+          <div class="social-title">или войти через</div>
+          <div class="social-row">
+            <button type="button" class="btn-social ya">
+              <span class="ya-icon"></span>
+              <span>Яндекс</span>
+            </button>
+            <button type="button" class="btn-social gg">
+              <span class="social-icon">G</span>
+              <span>Google</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Скрипты -->
+  <script src="../js/notifications.js"></script>
+  <script src="../js/toasts.js"></script>
+  <!-- Подключаем AuthUtils -->
+  <script src="../js/auth-utils.js"></script>
+  
+  <script>
+    // ========== ФУНКЦИЯ ВХОДА ==========
+    let isLoggingIn = false;
+    
+    async function login() {
+        if (isLoggingIn) {
+            console.log('⚠️  Вход уже выполняется');
+            return;
+        }
+        
+        isLoggingIn = true;
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        
+        if (!email || !password) {
+            showNotification('Пожалуйста, заполните все поля', 'error');
+            isLoggingIn = false;
+            return;
+        }
+        
+        localStorage.setItem('last_email', email);
+        
+        const loginButton = document.getElementById('loginButton');
+        const originalText = loginButton.innerHTML;
+        loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+        loginButton.disabled = true;
+        loginButton.classList.add('loading');
+        
+        try {
+            console.log('🔑 Отправка запроса на вход...');
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            // Проверяем, что ответ вообще есть
+            if (!response) {
+                throw new Error('Нет ответа от сервера');
+            }
+            
+            // Проверяем статус ответа до парсинга JSON
+            if (!response.ok) {
+                // Пытаемся получить текст ошибки
+                let errorMsg = `Ошибка сервера: ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.message || errorMsg;
+                } catch (e) {
+                    // не удалось распарсить JSON
+                }
+                showNotification(errorMsg, 'error');
+                resetLoginButton(loginButton, originalText);
+                isLoggingIn = false;
+                return;
+            }
+            
+            const data = await response.json();
+            
+            resetLoginButton(loginButton, originalText);
+            isLoggingIn = false;
+            
+            if (data.success) {
+                console.log('✅ Вход успешен');
+                
+                // Сохраняем токен и данные пользователя через AuthUtils
+                if (typeof AuthUtils !== 'undefined') {
+                    AuthUtils.saveToken(data.token);
+                    AuthUtils.saveUser(data.user);
+                    console.log('✅ Данные сохранены через AuthUtils');
+                    
+                    const savedToken = AuthUtils.getToken();
+                    console.log('🔑 Токен после сохранения:', savedToken ? savedToken.substring(0, 20) + '...' : '❌ НЕ СОХРАНИЛСЯ');
+                } else {
+                    // Fallback
+                    localStorage.setItem('jwt_token', data.token);
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    document.cookie = `token=${data.token}; path=/; max-age=86400; SameSite=Lax`;
+                    console.log('⚠️ AuthUtils не найден, данные сохранены напрямую');
+                }
+                
+                showNotification('Вход выполнен успешно!', 'success');
+                
+                // Перенаправление на профиль
+                setTimeout(() => {
+                    window.location.href = '/profile';
+                }, 1000);
+                
+            } else {
+                showNotification(data.message || 'Ошибка входа', 'error');
+            }
+            
+        } catch (error) {
+            console.error('❌ Ошибка при входе:', error);
+            
+            resetLoginButton(loginButton, originalText);
+            isLoggingIn = false;
+            
+            let errorMessage = 'Ошибка соединения с сервером';
+            if (error.name === 'AbortError') {
+                errorMessage = 'Сервер долго не отвечает. Попробуйте позже';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Нет соединения с сервером';
+            }
+            
+            showNotification(errorMessage, 'error');
+        }
+    }
+    
+    function resetLoginButton(button, originalText) {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        button.classList.remove('loading');
+    }
+    
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ Страница входа загружена');
+        
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        
+        // Проверяем параметры URL
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('error')) {
+            showNotification('Ошибка: ' + decodeURIComponent(urlParams.get('error')), 'error');
+        }
+        
+        if (urlParams.has('success')) {
+            showNotification(decodeURIComponent(urlParams.get('success')), 'success');
+        }
+        
+        if (urlParams.has('registered')) {
+            showNotification('Регистрация успешна! Теперь вы можете войти.', 'success');
+        }
+        
+        // Восстанавливаем сохраненный email
+        const savedEmail = localStorage.getItem('last_email');
+        if (savedEmail && emailInput) {
+            emailInput.value = savedEmail;
+        }
+        
+        if (emailInput) {
+            emailInput.focus();
+            emailInput.addEventListener('input', function() {
+                localStorage.setItem('last_email', this.value);
+            });
+        }
+        
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && 
+                (document.activeElement === emailInput || document.activeElement === passwordInput)) {
+                e.preventDefault();
+                login();
+            }
+        });
+        
+        // Проверяем загрузку AuthUtils
+        setTimeout(() => {
+            if (typeof AuthUtils === 'undefined') {
+                console.error('❌ AuthUtils НЕ ЗАГРУЖЕН! Путь должен быть: ../js/auth-utils.js');
+                console.log('Текущий URL страницы:', window.location.href);
+                console.log('Попробуйте открыть файл напрямую: http://localhost:3000/js/auth-utils.js');
+            } else {
+                console.log('✅ AuthUtils успешно загружен');
+                // Проверим методы
+                console.log('  - saveToken:', typeof AuthUtils.saveToken === 'function' ? '✅' : '❌');
+                console.log('  - getToken:', typeof AuthUtils.getToken === 'function' ? '✅' : '❌');
+                console.log('  - saveUser:', typeof AuthUtils.saveUser === 'function' ? '✅' : '❌');
+            }
+        }, 500);
+    });
+  </script>
+</body>
+</html>

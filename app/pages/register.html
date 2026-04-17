@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация — ArchAItect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Используем новый объединенный CSS файл -->
+  <link rel="stylesheet" href="../css/auth.css"> 
+  <link rel="stylesheet" href="../css/toasts.css"> 
+  <script src="../js/auth-utils.js"></script>
+  <script src="../js/register_script.js"></script>
+
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-icon"></div>
+      <span>ArchAItect</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="left-panel">
+        <img src="assets/images/cubrub.gif" alt="cub rub">
+    </section>
+
+    <section class="right-panel">
+      <div class="register-card">
+        <h1 class="register-title">Создать аккаунт</h1>
+
+        <form id="registerForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="username">
+                <i class="fas fa-user"></i>
+                Имя пользователя
+              </label>
+              <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Иван" 
+                required
+                maxlength="255"
+              >
+            </div>
+
+            <div class="field">
+              <label for="surname">
+                <i class="fas fa-user"></i>
+                Фамилия пользователя
+              </label>
+              <input 
+                type="text" 
+                id="surname" 
+                name="surname" 
+                placeholder="Иванов" 
+                required
+                maxlength="255"
+              >
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">
+              <i class="fas fa-envelope"></i>
+              Электронная почта
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              placeholder="user@archai.com" 
+              required
+              maxlength="255"
+            >
+          </div>
+
+          <div class="field">
+            <label for="password">
+              <i class="fas fa-lock"></i>
+              Пароль
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="*************" 
+              required
+              maxlength="255"
+            >
+            
+            <div class="password-strength">
+              <span>Сложность пароля:</span>
+              <div class="strength-meter">
+                <div class="strength-fill"></div>
+              </div>
+              <button class="help-button">?</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="confirmPassword">
+              <i class="fas fa-lock"></i>
+              Подтвердите пароль
+            </label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              name="confirmPassword" 
+              placeholder="*************" 
+              required
+              maxlength="255"
+            >
+          </div>
+
+          <div class="terms-checkbox">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">
+              Я согласен с <a href="#">условиями использования</a> и 
+              <a href="#">политикой конфиденциальности</a> ArchAItect
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-user-plus"></i>
+            Зарегистрироваться
+          </button>
+
+          <div class="secondary-actions">
+            <span>Уже есть аккаунт?</span>
+            <button type="button" class="btn-ghost" onclick="window.location.href='/login'">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>Войти</span>
+            </button>
+          </div>
+
+          <div class="social-title">
+            <span>или зарегистрироваться через</span>
+          </div>
+          <div class="social-row">
+            <button type="button" class="btn-social ya">
+              <span class="ya-icon"></span>
+              <span>Яндекс</span>
+            </button>
+            <button type="button" class="btn-social gg">
+              <span class="social-icon">G</span>
+              <span>Google</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+    <script src="../js/toasts.js"></script>
+</body>
+</html>

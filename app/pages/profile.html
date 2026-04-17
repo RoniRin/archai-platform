@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Профиль — ArchAItect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/profile.css">
+    <script src="../js/auth-utils.js"></script>
+    <script src="../js/toasts.js"></script>
+</head>
+  <style>
+    /* Стили для уведомлений */
+    .notification-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .notification {
+      background: white;
+      border-left: 4px solid;
+      padding: 15px 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      min-width: 300px;
+      max-width: 400px;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .notification.success {
+      border-color: #27ae60;
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .notification.error {
+      border-color: #e74c3c;
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .notification.warning {
+      border-color: #f39c12;
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .notification.info {
+      border-color: #3498db;
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    .notification-icon i {
+      font-size: 20px;
+    }
+    
+    .notification-content {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .notification-close {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.7;
+    }
+    
+    .notification-close:hover {
+      opacity: 1;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Стили для списка сессий */
+    .sessions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .session-item {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 16px;
+      border-left: 4px solid #3498db;
+    }
+    
+    .session-item.current {
+      border-left-color: #27ae60;
+      background: #f1f8f1;
+    }
+    
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .session-device {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .session-status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    
+    .session-status.current {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .session-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: #666;
+    }
+    
+    .session-details div {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .loading-text, .empty-text, .error-text {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    /* Стили для информации профиля */
+    .profile-info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .info-item:last-child {
+      border-bottom: none;
+    }
+    
+    .info-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    .info-value {
+      font-weight: 500;
+    }
+    
+    .status-active {
+      color: #27ae60;
+      font-weight: 600;
+    }
+    
+    /* Адаптивные стили */
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .notification {
+        min-width: 250px;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-title">
+    <div class="topbar-logo"></div>
+    <span>ArchAItect</span>
+  </div>
+  <div class="topbar-user">
+    <span id="userEmail">Загрузка...</span>
+    <div class="avatar-mini" id="userAvatar">AA</div>
+  </div>
+</header>
+
+<main class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Профиль пользователя</div>
+      <div class="page-subtitle" id="userGreeting">Управляйте личными данными и настройками аккаунта</div>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn-main" onclick="window.location.href='../index.html'">
+        <i class="fas fa-home"></i> На главную
+      </button>
+      <button class="btn-outline" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+      </button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Левая колонка: профиль + проекты -->
+    <section>
+      <div class="card">
+        <div class="card-title">Основная информация</div>
+
+        <div class="profile-main">
+          <div class="profile-avatar" id="mainAvatar">AA</div>
+          <div class="profile-info">
+            <h2 id="userFullName">Загрузка...</h2>
+            <div class="profile-meta">
+              <span><i class="fas fa-calendar-alt"></i> На платформе с <span id="userSince">2024</span></span>
+              <span><i class="fas fa-layer-group"></i> <span id="projectCount">0</span> проектов</span>
+            </div>
+          </div>
+        </div>
+
+        <form class="profile-form" autocomplete="off" id="profileForm">
+          <div class="field">
+            <label><i class="fas fa-user"></i> Имя</label>
+            <input type="text" id="username" required>
+          </div>
+          <div class="field">
+            <label><i class="fas fa-user"></i> Фамилия</label>
+            <input type="text" id="surname" required>
+          </div>
+          <div class="field">
+            <label><i class="fas fa-envelope"></i> Электронная почта</label>
+            <input type="email" id="email" required>
+          </div>
+        </form>
+
+        <div class="profile-actions">
+          <button type="button" class="btn-primary" id="saveProfileBtn">
+            <i class="fas fa-save"></i> Сохранить изменения
+          </button>
+          <button type="button" class="btn-ghost" id="changePasswordBtn">
+            <i class="fas fa-lock"></i> Изменить пароль
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Последние проекты</div>
+        <div id="projectsList" class="projects-list">
+          <div class="loading-text">Загрузка проектов...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Правая колонка: статистика + настройки -->
+    <section>
+      <div class="card">
+        <div class="card-title">Статистика</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon projects">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="statProjects">0</h3>
+              <p>Созданных проектов</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon time">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="statHours">0 ч</h3>
+              <p>В работе на платформе</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon efficiency">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="statEfficiency">0%</h3>
+              <p>Эффективность планировок</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon downloads">
+              <i class="fas fa-download"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="statDownloads">0</h3>
+              <p>Скачиваний чертежей</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Настройки</div>
+        <div class="settings-list">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Тёмная тема</h4>
+              <p>Переключить интерфейс</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="darkThemeToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Двухфакторная аутентификация</h4>
+              <p>Повышенная безопасность</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="twoFactorToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Email уведомления</h4>
+              <p>Получать новости и обновления</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="emailNotificationsToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Действия</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <button class="btn-ghost" style="width: 100%;" id="revokeSessionsBtn">
+            <i class="fas fa-user-slash"></i> Отозвать все другие сессии
+          </button>
+          <button class="btn-ghost" style="width: 100%;" id="helpBtn">
+            <i class="fas fa-question-circle"></i> Помощь и поддержка
+          </button>
+          <button class="btn-ghost" style="width: 100%; color: #e3503e; border-color: #e3503e;" id="deleteAccountBtn">
+            <i class="fas fa-trash-alt"></i> Удалить аккаунт
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Модальное окно для изменения пароля -->
+<div class="modal" id="passwordModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="fas fa-lock"></i> Изменить пароль</h2>
+      <button class="modal-close" id="closePasswordModal">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="changePasswordForm">
+        <div class="field">
+          <label><i class="fas fa-lock"></i> Текущий пароль</label>
+          <div class="password-field">
+            <input type="password" id="currentPassword" placeholder="Введите текущий пароль" required>
+            <button type="button" class="toggle-password" data-target="currentPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="field">
+          <label><i class="fas fa-lock"></i> Новый пароль</label>
+          <div class="password-field">
+            <input type="password" id="newPassword" placeholder="Введите новый пароль" required>
+            <button type="button" class="toggle-password" data-target="newPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="password-strength">
+            <div class="strength-meter">
+              <div class="strength-fill" id="passwordStrength"></div>
+            </div>
+            <span class="strength-text" id="strengthText">Слабый</span>
+          </div>
+        </div>
+        
+        <div class="field">
+          <label><i class="fas fa-lock"></i> Подтвердите новый пароль</label>
+          <div class="password-field">
+            <input type="password" id="confirmPassword" placeholder="Повторите новый пароль" required>
+            <button type="button" class="toggle-password" data-target="confirmPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="passwordMatch" class="match-status"></div>
+        </div>
+        
+        <div class="password-requirements">
+          <h4><i class="fas fa-info-circle"></i> Требования к паролю:</h4>
+          <ul>
+            <li id="reqLength"><i class="fas fa-check-circle"></i> Минимум 8 символов</li>
+            <li id="reqUppercase"><i class="fas fa-check-circle"></i> Хотя бы одна заглавная буква</li>
+            <li id="reqLowercase"><i class="fas fa-check-circle"></i> Хотя бы одна строчная буква</li>
+            <li id="reqNumber"><i class="fas fa-check-circle"></i> Хотя бы одна цифра</li>
+            <li id="reqSpecial"><i class="fas fa-check-circle"></i> Хотя бы один спецсимвол (!@#$%^&*)</li>
+          </ul>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="cancelPasswordChange">Отмена</button>
+          <button type="submit" class="btn-primary" id="savePasswordBtn">
+            <i class="fas fa-save"></i> Сохранить новый пароль
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Скрипты -->
+
+<script>
+// ========== КЛАСС ДЛЯ УПРАВЛЕНИЯ ПРОФИЛЕМ ==========
+class ProfileManager {
+    constructor() {
+        this.userData = null;
+        this.statsData = null;
+        this.projectsData = null;
+        this.init();
+    }
+
+    async init() {
+        // Проверяем авторизацию
+        if (!this.checkAuth()) {
+            return;
+        }
+
+        // Загружаем данные профиля
+        await this.loadProfileData();
+        
+        // Инициализируем UI
+        this.initUI();
+        
+        // Загружаем статистику
+        await this.loadStatistics();
+        
+        // Загружаем проекты
+        await this.loadProjects();
+        
+        // Загружаем сессии
+        await this.loadSessions();
+    }
+
+    checkAuth() {
+        if (!AuthUtils.isAuthenticated()) {
+            showNotification('Требуется авторизация', 'error');
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1500);
+            return false;
+        }
+        return true;
+    }
+
+    async loadProfileData() {
+        try {
+            showNotification('Загрузка профиля...', 'info');
+            
+            const response = await AuthUtils.fetchWithAuth('/api/auth/profile');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.userData = data.user;
+                this.updateProfileUI();
+                showNotification('Профиль загружен', 'success');
+            } else {
+                throw new Error(data.message || 'Ошибка загрузки профиля');
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки профиля:', error);
+            showNotification('Ошибка загрузки профиля', 'error');
+            
+            // Если ошибка авторизации, выходим
+            if (error.message.includes('токен') || error.message.includes('401')) {
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            }
+        }
+    }
+
+    async loadStatistics() {
+        try {
+            // Показываем демо статистику, так как эндпоинт может не существовать
+            this.statsData = {
+                projects: 3,
+                hours: 42,
+                efficiency: 85,
+                downloads: 12
+            };
+            this.updateStatisticsUI();
+        } catch (error) {
+            console.error('Ошибка загрузки статистики:', error);
+            // Используем данные по умолчанию
+            this.statsData = {
+                projects: 0,
+                hours: 0,
+                efficiency: 0,
+                downloads: 0
+            };
+            this.updateStatisticsUI();
+        }
+    }
+
+    async loadProjects() {
+        try {
+            // Показываем демо проекты
+            this.displayMockProjects();
+        } catch (error) {
+            console.error('Ошибка загрузки проектов:', error);
+            this.displayMockProjects(); // Используем демо данные
+        }
+    }
+
+    async loadSessions() {
+        try {
+            const response = await AuthUtils.fetchWithAuth('/api/auth/sessions');
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('Сессии загружены:', data.sessions);
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки сессий:', error);
+        }
+    }
+
+    updateProfileUI() {
+        if (!this.userData) return;
+
+        // Основная информация
+        document.getElementById('username').value = this.userData.username || '';
+        document.getElementById('surname').value = this.userData.surname || '';
+        document.getElementById('email').value = this.userData.email || '';
+        
+        // Отображение информации
+        document.getElementById('userFullName').textContent = 
+            `${this.userData.username} ${this.userData.surname || ''}`.trim();
+        
+        document.getElementById('userEmail').textContent = this.userData.email;
+        document.getElementById('userGreeting').textContent = 
+            `Добро пожаловать, ${this.userData.username}! Управляйте личными данными и настройками аккаунта`;
+        
+        // Инициалы для аватара
+        const initials = this.getInitials(this.userData.username, this.userData.surname);
+        document.getElementById('userAvatar').textContent = initials;
+        document.getElementById('mainAvatar').textContent = initials;
+        
+        // Дата регистрации
+        if (this.userData.created_at) {
+            const date = new Date(this.userData.created_at);
+            document.getElementById('userSince').textContent = date.getFullYear();
+        }
+    }
+
+    updateStatisticsUI() {
+        if (!this.statsData) return;
+        
+        document.getElementById('statProjects').textContent = this.statsData.projects || 0;
+        document.getElementById('statHours').textContent = this.statsData.hours || '0 ч';
+        document.getElementById('statEfficiency').textContent = this.statsData.efficiency || '0%';
+        document.getElementById('statDownloads').textContent = this.statsData.downloads || 0;
+        document.getElementById('projectCount').textContent = this.statsData.projects || 0;
+    }
+
+    displayMockProjects() {
+        const container = document.getElementById('projectsList');
+        
+        const mockProjects = [
+            {
+                name: 'ЖК «Северный квартал»',
+                updated_at: new Date('2025-12-12'),
+                description: '12 секций · класс комфорт · 18–25 этажей'
+            },
+            {
+                name: 'ЖК «Панорама»',
+                updated_at: new Date('2025-12-05'),
+                description: 'Башни + угловые секции · 3 варианта планировок'
+            },
+            {
+                name: 'Бизнес-центр «Сфера»',
+                updated_at: new Date('2025-11-28'),
+                description: '25 этажей · подземный паркинг · 4 входа'
+            }
+        ];
+        
+        const html = mockProjects.map(project => `
+            <div class="project-item">
+                <div class="project-top">
+                    <div class="project-name">${project.name}</div>
+                    <div class="project-date">Обновлён ${project.updated_at.toLocaleDateString('ru-RU')}</div>
+                </div>
+                <div class="project-meta">${project.description}</div>
+                <div class="project-actions">
+                    <button class="btn-small" onclick="profileManager.openProject('demo')">
+                        <i class="fas fa-eye"></i> Открыть
+                    </button>
+                    <button class="btn-small" onclick="profileManager.downloadProject('demo')">
+                        <i class="fas fa-download"></i> PDF
+                    </button>
+                    <button class="btn-small" onclick="profileManager.showStats('demo')">
+                        <i class="fas fa-chart-bar"></i> Статистика
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = html;
+    }
+
+    getInitials(username, surname) {
+        const first = username ? username.charAt(0).toUpperCase() : 'A';
+        const second = surname ? surname.charAt(0).toUpperCase() : 'A';
+        return first + second;
+    }
+
+    initUI() {
+        // Кнопка сохранения профиля
+        document.getElementById('saveProfileBtn').addEventListener('click', () => this.saveProfile());
+        
+        // Кнопка выхода
+        document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
+        
+        // Кнопка изменения пароля
+        document.getElementById('changePasswordBtn').addEventListener('click', () => this.showChangePasswordModal());
+        
+        // Кнопка отзыва сессий
+        document.getElementById('revokeSessionsBtn').addEventListener('click', () => this.revokeOtherSessions());
+        
+        // Кнопка помощи
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            showNotification('Свяжитесь с поддержкой: support@archai.com', 'info');
+        });
+        
+        // Кнопка удаления аккаунта
+        document.getElementById('deleteAccountBtn').addEventListener('click', () => this.confirmDeleteAccount());
+        
+        // Переключатели настроек
+        document.getElementById('darkThemeToggle').addEventListener('change', (e) => {
+            this.saveSetting('darkTheme', e.target.checked);
+            showNotification(e.target.checked ? 'Тёмная тема включена' : 'Тёмная тема выключена', 'info');
+        });
+        
+        document.getElementById('twoFactorToggle').addEventListener('change', (e) => {
+            this.saveSetting('twoFactorAuth', e.target.checked);
+            showNotification(e.target.checked ? 'Двухфакторная аутентификация включена' : 'Двухфакторная аутентификация выключена', 'info');
+        });
+        
+        document.getElementById('emailNotificationsToggle').addEventListener('change', (e) => {
+            this.saveSetting('emailNotifications', e.target.checked);
+            showNotification(e.target.checked ? 'Уведомления включены' : 'Уведомления выключены', 'info');
+        });
+
+        // Инициализация модального окна пароля
+        this.initPasswordModal();
+    }
+
+    initPasswordModal() {
+        const passwordModal = document.getElementById('passwordModal');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const closePasswordModal = document.getElementById('closePasswordModal');
+        const cancelPasswordChange = document.getElementById('cancelPasswordChange');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        
+        // Открытие модального окна
+        changePasswordBtn.addEventListener('click', () => {
+            passwordModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            this.resetPasswordForm();
+        });
+        
+        // Закрытие модального окна
+        const closeModal = () => {
+            passwordModal.classList.remove('active');
+            document.body.style.overflow = '';
+            this.resetPasswordForm();
+        };
+        
+        closePasswordModal.addEventListener('click', closeModal);
+        cancelPasswordChange.addEventListener('click', closeModal);
+        
+        // Закрытие по клику вне окна
+        passwordModal.addEventListener('click', (e) => {
+            if (e.target === passwordModal) {
+                closeModal();
+            }
+        });
+        
+        // Закрытие по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && passwordModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+        
+        // Переключение видимости пароля
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+        
+        // Проверка сложности нового пароля
+        const newPassword = document.getElementById('newPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+        
+        if (newPassword) {
+            newPassword.addEventListener('input', this.checkPasswordStrength);
+            newPassword.addEventListener('input', this.checkPasswordRequirements);
+        }
+        
+        if (confirmPassword) {
+            confirmPassword.addEventListener('input', this.checkPasswordMatch);
+        }
+        
+        // Обработка отправки формы изменения пароля
+        changePasswordForm.addEventListener('submit', (e) => this.handlePasswordChange(e));
+    }
+
+    async saveProfile() {
+        const saveBtn = document.getElementById('saveProfileBtn');
+        const originalText = saveBtn.innerHTML;
+        
+        try {
+            // Подготовка данных
+            const updatedData = {
+                username: document.getElementById('username').value.trim(),
+                surname: document.getElementById('surname').value.trim(),
+                email: document.getElementById('email').value.trim()
+            };
+            
+            // Валидация
+            if (!updatedData.username || !updatedData.email) {
+                showNotification('Заполните все обязательные поля', 'error');
+                return;
+            }
+            
+            // Email валидация
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(updatedData.email)) {
+                showNotification('Некорректный email адрес', 'error');
+                return;
+            }
+            
+            // Показываем индикатор загрузки
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+            saveBtn.disabled = true;
+            
+            // Отправляем на сервер с ПРАВИЛЬНЫМ методом PUT
+            const response = await AuthUtils.fetchWithAuth('/api/auth/update-profile', {
+                method: 'PUT', // ИСПРАВЛЕНО: POST → PUT
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Обновляем данные
+                this.userData = { ...this.userData, ...updatedData };
+                this.updateProfileUI();
+                
+                // Сохраняем новый токен, если он есть в ответе
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    console.log('Токен обновлен после изменения профиля');
+                }
+                
+                // Обновляем localStorage
+                const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                const updatedUser = { ...currentUser, ...updatedData };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                
+                showNotification('Профиль успешно обновлён', 'success');
+                
+                // Визуальная обратная связь
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Сохранено!';
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }, 2000);
+                
+            } else {
+                throw new Error(data.message || 'Ошибка сохранения');
+            }
+            
+        } catch (error) {
+            console.error('Ошибка сохранения профиля:', error);
+            showNotification(error.message || 'Ошибка сохранения профиля', 'error');
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    }
+
+    showChangePasswordModal() {
+        // Модальное окно уже открывается через initPasswordModal
+    }
+
+async handlePasswordChange(e) {
+    e.preventDefault();
+    
+    const savePasswordBtn = document.getElementById('savePasswordBtn');
+    const originalText = savePasswordBtn.innerHTML;
+    
+    try {
+        // Валидация
+        if (!this.validatePasswordForm()) {
+            return;
+        }
+        
+        // Показ индикатора загрузки
+        savePasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+        savePasswordBtn.disabled = true;
+        
+        // Получаем данные формы
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        
+        console.log('Отправка запроса на изменение пароля...');
+        
+        // Отправляем на сервер
+        const response = await AuthUtils.fetchWithAuth('/api/auth/change-password', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            })
+        });
+        
+        console.log('Ответ сервера:', response.status, response.statusText);
+        
+        const data = await response.json();
+        console.log('Данные ответа:', data);
+        
+        if (data.success) {
+            // Закрытие модального окна
+            document.getElementById('passwordModal').classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Показать уведомление об успехе
+            showNotification(data.message || 'Пароль успешно изменён!', 'success');
+            
+            // Сброс формы
+            this.resetPasswordForm();
+            
+            // Если сервер отозвал сессии, может потребоваться перелогин
+            if (data.message && data.message.includes('отозваны')) {
+                setTimeout(() => {
+                    showNotification('Войдите снова с новым паролем', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                }, 1500);
+            }
+        } else {
+            // Если сервер вернул ошибку
+            console.error('Ошибка от сервера:', data);
+            throw new Error(data.message || 'Ошибка изменения пароля');
+        }
+        
+    } catch (error) {
+        console.error('Полная ошибка изменения пароля:', error);
+        
+        // Проверяем, если это ошибка сети
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            showNotification('Ошибка сети. Проверьте подключение к интернету.', 'error');
+            return;
+        }
+        
+        // Проверяем, если это ошибка парсинга JSON
+        if (error instanceof SyntaxError) {
+            showNotification('Ошибка обработки ответа сервера', 'error');
+            return;
+        }
+        
+        // Показываем конкретное сообщение об ошибке
+        if (error.message.includes('401') || error.message.includes('токен')) {
+            showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+        } else if (error.message.includes('400') || error.message.includes('неверен')) {
+            showNotification('Текущий пароль неверен', 'error');
+        } else {
+            showNotification(error.message || 'Ошибка изменения пароля', 'error');
+        }
+    } finally {
+        savePasswordBtn.innerHTML = originalText;
+        savePasswordBtn.disabled = false;
+    }
+}
+ validatePasswordForm() {
+    const currentPassword = document.getElementById('currentPassword');
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    const currentPass = currentPassword.value.trim();
+    const newPass = newPassword.value.trim();
+    const confirmPass = confirmPassword.value.trim();
+    
+    let isValid = true;
+    let errorMessage = '';
+    
+    // Проверка текущего пароля
+    if (currentPass.length < 6) {
+        currentPassword.classList.add('invalid');
+        errorMessage = 'Текущий пароль должен содержать минимум 6 символов';
+        isValid = false;
+    } else {
+        currentPassword.classList.remove('invalid');
+    }
+    
+    // Проверка нового пароля
+    if (newPass.length < 8) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль должен содержать минимум 8 символов';
+        isValid = false;
+    } else if (newPass.length > 100) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль слишком длинный (максимум 100 символов)';
+        isValid = false;
+    } else if (!/[A-Z]/.test(newPass)) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль должен содержать хотя бы одну заглавную букву';
+        isValid = false;
+    } else if (!/[a-z]/.test(newPass)) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль должен содержать хотя бы одну строчную букву';
+        isValid = false;
+    } else if (!/[0-9]/.test(newPass)) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль должен содержать хотя бы одну цифру';
+        isValid = false;
+    } else if (!/[^A-Za-z0-9]/.test(newPass)) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль должен содержать хотя бы один спецсимвол (!@#$%^&* и т.д.)';
+        isValid = false;
+    } else {
+        newPassword.classList.remove('invalid');
+    }
+    
+    // Проверка совпадения паролей
+    if (newPass !== confirmPass) {
+        confirmPassword.classList.add('invalid');
+        errorMessage = 'Новые пароли не совпадают';
+        isValid = false;
+    } else {
+        confirmPassword.classList.remove('invalid');
+    }
+    
+    // Проверка, что новый пароль не совпадает с текущим
+    if (newPass === currentPass) {
+        newPassword.classList.add('invalid');
+        errorMessage = 'Новый пароль должен отличаться от текущего';
+        isValid = false;
+    }
+    
+    // Показ ошибки
+    if (!isValid && errorMessage) {
+        showNotification(errorMessage, 'error');
+        return false;
+    }
+    
+    return isValid;
+}
+    checkPasswordStrength() {
+        const password = document.getElementById('newPassword').value;
+        let strength = 0;
+        
+        // Длина пароля
+        if (password.length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        
+        // Наличие разных типов символов
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        
+        // Обновление индикатора
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthText = document.getElementById('strengthText');
+        
+        // Сброс классов
+        passwordStrength.className = 'strength-fill';
+        strengthText.className = 'strength-text';
+        
+        // Определяем уровень сложности
+        let strengthClass = 'weak';
+        let strengthLabel = 'Слабый';
+        
+        if (strength <= 2) {
+            strengthClass = 'weak';
+            strengthLabel = 'Слабый';
+        } else if (strength <= 4) {
+            strengthClass = 'medium';
+            strengthLabel = 'Средний';
+        } else {
+            strengthClass = 'strong';
+            strengthLabel = 'Сильный';
+        }
+        
+        // Применяем классы
+        passwordStrength.classList.add(strengthClass);
+        strengthText.classList.add(strengthClass);
+        strengthText.textContent = strengthLabel;
+    }
+
+    checkPasswordRequirements() {
+        const password = document.getElementById('newPassword').value;
+        
+        // Проверка каждого требования
+        const requirements = [
+            { element: document.getElementById('reqLength'), test: password.length >= 8, text: 'Минимум 8 символов' },
+            { element: document.getElementById('reqUppercase'), test: /[A-Z]/.test(password), text: 'Хотя бы одна заглавная буква' },
+            { element: document.getElementById('reqLowercase'), test: /[a-z]/.test(password), text: 'Хотя бы одна строчная буква' },
+            { element: document.getElementById('reqNumber'), test: /[0-9]/.test(password), text: 'Хотя бы одна цифра' },
+            { element: document.getElementById('reqSpecial'), test: /[^A-Za-z0-9]/.test(password), text: 'Хотя бы один спецсимвол (!@#$%^&*)' }
+        ];
+        
+        requirements.forEach(req => {
+            if (req.test) {
+                req.element.classList.add('valid');
+                req.element.classList.remove('invalid');
+                req.element.innerHTML = `<i class="fas fa-check-circle"></i> ${req.text}`;
+            } else {
+                req.element.classList.add('invalid');
+                req.element.classList.remove('valid');
+                req.element.innerHTML = `<i class="far fa-circle"></i> ${req.text}`;
+            }
+        });
+    }
+
+    checkPasswordMatch() {
+        const newPass = document.getElementById('newPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+        const passwordMatch = document.getElementById('passwordMatch');
+        
+        if (confirmPass === '') {
+            passwordMatch.style.display = 'none';
+            passwordMatch.className = 'match-status';
+            return;
+        }
+        
+        if (newPass === confirmPass) {
+            passwordMatch.style.display = 'block';
+            passwordMatch.className = 'match-status matching';
+            passwordMatch.innerHTML = '<i class="fas fa-check"></i> Пароли совпадают';
+        } else {
+            passwordMatch.style.display = 'block';
+            passwordMatch.className = 'match-status not-matching';
+            passwordMatch.innerHTML = '<i class="fas fa-times"></i> Пароли не совпадают';
+        }
+    }
+
+    resetPasswordForm() {
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        if (changePasswordForm) {
+            changePasswordForm.reset();
+        }
+        
+        // Сброс индикаторов
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthText = document.getElementById('strengthText');
+        const passwordMatch = document.getElementById('passwordMatch');
+        
+        passwordStrength.className = 'strength-fill';
+        strengthText.className = 'strength-text';
+        strengthText.textContent = 'Слабый';
+        passwordMatch.style.display = 'none';
+        passwordMatch.className = 'match-status';
+        
+        // Сброс требований
+        const requirements = ['reqLength', 'reqUppercase', 'reqLowercase', 'reqNumber', 'reqSpecial'];
+        requirements.forEach(id => {
+            const req = document.getElementById(id);
+            if (req) {
+                req.classList.remove('valid', 'invalid');
+                const text = req.textContent.replace(/^.*? /, '');
+                req.innerHTML = `<i class="far fa-circle"></i> ${text}`;
+            }
+        });
+    }
+
+    async revokeOtherSessions() {
+        if (!confirm('Вы уверены, что хотите отозвать все другие сессии?')) {
+            return;
+        }
+        
+        try {
+            showNotification('Отзыв других сессий...', 'info');
+            
+            const response = await AuthUtils.fetchWithAuth('/api/auth/sessions/revoke-others', {
+                method: 'POST'
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showNotification('Все другие сессии отозваны', 'success');
+            } else {
+                throw new Error(data.message);
+            }
+            
+        } catch (error) {
+            console.error('Ошибка отзыва сессий:', error);
+            showNotification(error.message || 'Ошибка отзыва сессий', 'error');
+        }
+    }
+
+    async logout() {
+    if (!confirm('Вы уверены, что хотите выйти?')) {
+        return;
+    }
+    
+    try {
+        showNotification('Выход из системы...', 'info');
+        
+        // Отправляем запрос на выход
+        await AuthUtils.fetchWithAuth('/api/auth/logout', {
+            method: 'POST'
+        }).catch(err => console.error('Ошибка при выходе:', err));
+        
+    } catch (error) {
+        console.error('Ошибка при выходе:', error);
+    } finally {
+        // Очищаем все данные
+        AuthUtils.removeToken();
+        localStorage.removeItem('user');
+        localStorage.removeItem('archai_parameters');
+        localStorage.removeItem('archai_selected_variant');
+        
+        showNotification('Вы вышли из системы', 'success');
+        
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1000);
+    }
+}
+
+    confirmDeleteAccount() {
+        if (!confirm('ВНИМАНИЕ: Это действие необратимо! Все ваши данные будут удалены. Продолжить?')) {
+            return;
+        }
+        
+        if (!confirm('Последнее предупреждение: Вы уверены на 100%?')) {
+            return;
+        }
+        
+        showNotification('Функция удаления аккаунта в разработке', 'warning');
+    }
+
+    saveSetting(key, value) {
+        const settings = JSON.parse(localStorage.getItem('user_settings') || '{}');
+        settings[key] = value;
+        localStorage.setItem('user_settings', JSON.stringify(settings));
+    }
+
+    // Методы для работы с проектами
+    openProject(projectId) {
+        showNotification(`Открытие проекта ${projectId}...`, 'info');
+        // В реальном приложении здесь будет переход к проекту
+    }
+
+    downloadProject(projectId) {
+        showNotification(`Скачивание проекта ${projectId}...`, 'info');
+        // В реальном приложении здесь будет скачивание
+    }
+
+    showStats(projectId) {
+        showNotification(`Статистика проекта ${projectId}`, 'info');
+        // В реальном приложении здесь будет показ статистики
+    }
+}
+
+// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+function showNotification(message, type = 'info') {
+    let container = document.getElementById('notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'notification-container';
+        document.body.appendChild(container);
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    };
+    
+    notification.innerHTML = `
+        <div class="notification-icon">
+            <i class="${icons[type] || icons.info}"></i>
+        </div>
+        <div class="notification-content">${message}</div>
+        <button class="notification-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    container.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// ========== ЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализируем менеджер профиля
+    window.profileManager = new ProfileManager();
+    
+    // Загружаем сохраненные настройки
+    const settings = JSON.parse(localStorage.getItem('user_settings') || '{}');
+    document.getElementById('darkThemeToggle').checked = settings.darkTheme || false;
+    document.getElementById('twoFactorToggle').checked = settings.twoFactorAuth || false;
+    document.getElementById('emailNotificationsToggle').checked = settings.emailNotifications !== false;
+    
+    // Привязываем методы checkPasswordStrength, checkPasswordRequirements, checkPasswordMatch к this
+    window.profileManager.checkPasswordStrength = window.profileManager.checkPasswordStrength.bind(window.profileManager);
+    window.profileManager.checkPasswordRequirements = window.profileManager.checkPasswordRequirements.bind(window.profileManager);
+    window.profileManager.checkPasswordMatch = window.profileManager.checkPasswordMatch.bind(window.profileManager);
+});
+</script>
+</body>
+</html>

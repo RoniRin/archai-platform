@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>История проектов — ArchAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/toasts.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="topbar-title">
+        <div class="topbar-logo"></div>
+        <span>История проектов</span>
+    </div>
+    <div class="topbar-buttons">
+        <button class="topbar-button" onclick="window.location.href='../index.html'">
+            <i class="fas fa-home"></i> На главную
+        </button>
+        <button class="topbar-button" onclick="window.location.href='profile.html'">
+            <i class="fas fa-user-circle"></i> Профиль
+        </button>
+    </div>
+</header>
+
+<main class="page">
+    <div class="page-header">
+        <div>
+            <div class="page-title">История проектов</div>
+            <div class="page-subtitle">Ваши сохраненные проекты и их параметры</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Список проектов</div>
+        <div id="projectsList" class="projects-list">
+            <div class="loading-text">Загрузка проектов...</div>
+        </div>
+    </div>
+</main>
+
+<script src="../js/auth-client.js"></script>
+<script>
+class HistoryManager {
+    constructor() {
+        this.init();
+    }
+
+    async init() {
+        if (!this.checkAuth()) {
+            return;
+        }
+        await this.loadProjects();
+    }
+
+    checkAuth() {
+        if (!AuthUtils.isAuthenticated()) {
+            this.showNotification('Требуется авторизация', 'error');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+            return false;
+        }
+        return true;
+    }
+
+    async loadProjects() {
+        try {
+            const response = await AuthUtils.fetchWithAuth('/api/projects/history');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.displayProjects(data.projects);
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки проектов:', error);
+            this.showNotification('Ошибка загрузки истории проектов', 'error');
+        }
+    }
+
+    displayProjects(projects) {
+        const container = document.getElementById('projectsList');
+        
+        if (!projects || projects.length === 0) {
+            container.innerHTML = `
+                <div class="empty-text">
+                    <i class="fas fa-inbox" style="font-size: 48px; color: #bdc3c7; margin-bottom: 16px;"></i>
+                    <p>У вас пока нет сохраненных проектов</p>
+                    <button class="btn-primary" onclick="window.location.href='../index.html'">
+                        <i class="fas fa-plus"></i> Создать первый проект
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        const html = projects.map(project => `
+            <div class="project-item">
+                <div class="project-top">
+                    <div class="project-name">${project.project_name}</div>
+                    <div class="project-date">
+                        ${new Date(project.created_at).toLocaleDateString('ru-RU')}
+                    </div>
+                </div>
+                <div class="project-meta">
+                    <span><i class="fas fa-building"></i> ${project.floor_count} этажей</span>
+                    <span><i class="fas fa-home"></i> ${project.max_appart_count} кв./этаж</span>
+                    <span><i class="fas fa-expand-arrows-alt"></i> до ${project.max_appart_area} м²</span>
+                </div>
+                <div class="project-actions">
+                    <button class="btn-small" onclick="historyManager.openProject(${project.id_project})">
+                        <i class="fas fa-eye"></i> Открыть
+                    </button>
+                    <button class="btn-small" onclick="historyManager.continueProject(${project.id_project})">
+                        <i class="fas fa-edit"></i> Продолжить
+                    </button>
+                    <button class="btn-small" onclick="historyManager.downloadProject(${project.id_project})">
+                        <i class="fas fa-download"></i> PDF
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = html;
+    }
+
+    openProject(projectId) {
+        this.showNotification(`Открытие проекта ${projectId}...`, 'info');
+        // Здесь можно добавить открытие детальной страницы проекта
+    }
+
+    continueProject(projectId) {
+        this.showNotification(`Загрузка параметров проекта ${projectId}...`, 'info');
+        // Здесь можно добавить загрузку параметров на главную страницу
+    }
+
+    downloadProject(projectId) {
+        this.showNotification(`Скачивание проекта ${projectId}...`, 'info');
+        // Здесь можно добавить скачивание проекта
+    }
+
+    showNotification(message, type = 'info') {
+        let container = document.getElementById('notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+        
+        notification.innerHTML = `
+            <div class="notification-icon">
+                <i class="${icons[type] || icons.info}"></i>
+            </div>
+            <div class="notification-content">${message}</div>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.historyManager = new HistoryManager();
+});
+</script>
+</body>
+</html>

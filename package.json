@@ -1,0 +1,39 @@
+{
+  "name": "archai",
+  "version": "1.0.0",
+  "description": "ArchAI - система автоматического планирования архитектурных проектов",
+  "main": "app/backend/server.js",
+  "scripts": {
+    "start": "node app/backend/server.js",
+    "dev": "nodemon app/backend/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "architecture",
+    "planning",
+    "construction",
+    "ai",
+    "building-design"
+  ],
+  "author": "ArchAI Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.1",
+    "child-process": "^1.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
+    "python-shell": "^5.0.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

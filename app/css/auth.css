@@ -1,0 +1,947 @@
+/* auth-register.css - Общие стили для авторизации и регистрации */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f5f3f0 0%, #e5e1dd 100%);
+  color: #222;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Шапка */
+.topbar {
+  height: 64px;
+  background: linear-gradient(135deg, #111 0%, #4a2050 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+}
+.logo-wrap:hover {
+  transform: translateY(-1px);
+}
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #e3503e 0%, #c23a2a 100%);
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(227, 80, 62, 0.3);
+  overflow: hidden;
+}
+.logo-icon::before,
+.logo-icon::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.95);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.logo-icon::before {
+  top: 5px;
+  left: 5px;
+  transform: rotate(45deg);
+}
+.logo-icon::after {
+  bottom: 5px;
+  right: 5px;
+  transform: rotate(45deg);
+}
+
+/* Основной макет */
+.page {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  min-height: calc(100vh - 64px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.left-panel {
+  background: linear-gradient(135deg, #f8f7f5 0%, #f0edeb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  border-right: 2px solid #e0dad3;
+  position: relative;
+  overflow: hidden;
+}
+
+.left-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e3503e, #1c2340);
+}
+
+.illustration {
+  max-width: 90%;
+  height: auto;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.12),
+    0 2px 8px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  border: 2px solid #e0dad3;
+  transform: perspective(1000px) rotateY(-5deg);
+  transition: all 0.5s ease;
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.illustration:hover {
+  transform: perspective(1000px) rotateY(0deg);
+  box-shadow: 
+    0 12px 48px rgba(0,0,0,0.15),
+    0 4px 16px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.right-panel {
+  background: linear-gradient(135deg, #f8f7f5 0%, #f0edeb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  position: relative;
+}
+
+.right-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1c2340, #e3503e);
+}
+
+/* Карточка формы (общая для login и register) */
+.login-card,
+.register-card {
+  max-width: 440px;
+  width: 100%;
+  background: linear-gradient(to bottom, #ffffff, #fcfbf9);
+  border-radius: 16px;
+  padding: 48px 40px;
+  box-shadow: 
+    0 8px 40px rgba(0,0,0,0.1),
+    0 2px 12px rgba(0,0,0,0.08),
+    0 0 0 1px rgba(0,0,0,0.04);
+  border: 2px solid #e0dad3;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before,
+.register-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e3503e, #1c2340);
+  border-radius: 16px 16px 0 0;
+}
+
+/* Заголовки */
+.login-title,
+.register-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 36px;
+  color: #111;
+  text-align: center;
+  letter-spacing: -0.5px;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.login-title::after,
+.register-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, #e3503e, #1c2340);
+  border-radius: 2px;
+}
+
+/* Сетка формы для регистрации */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 32px;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+/* Поля ввода (общие) */
+.field {
+  margin-bottom: 24px;
+  position: relative;
+}
+.field label {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #1c2340;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.3px;
+}
+.field label i {
+  color: #e3503e;
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+}
+.field input {
+  width: 100%;
+  height: 52px;
+  border-radius: 8px;
+  border: 2px solid #d0cbc4;
+  padding: 14px 18px;
+  font-size: 15px;
+  background: #fefefe;
+  color: #222;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+}
+.field input::placeholder {
+  color: #888;
+  opacity: 0.8;
+}
+.field input:hover {
+  border-color: #b8b3ac;
+  background: #fff;
+}
+.field input:focus {
+  outline: none;
+  border-color: #1c2340;
+  box-shadow: 
+    0 0 0 4px rgba(28, 35, 64, 0.15),
+    0 4px 16px rgba(28, 35, 64, 0.1);
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.field::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e0dad3, transparent);
+}
+
+/* Индикатор сложности пароля (только для регистрации) */
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.strength-meter {
+  flex-grow: 1;
+  height: 4px;
+  background: #e0dad3;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+}
+
+.strength-fill.weak { width: 33%; background: #e3503e; }
+.strength-fill.medium { width: 66%; background: #f39c12; }
+.strength-fill.strong { width: 100%; background: #27ae60; }
+
+/* Кнопка помощи (только для регистрации) */
+.help-button {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: help;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.help-button:hover {
+  background: rgba(0,0,0,0.1);
+  color: #1c2340;
+}
+
+/* Модальное окно подсказки (только для регистрации) */
+.help-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.help-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.help-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.help-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0dad3;
+}
+
+.help-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c2340;
+}
+
+.help-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.help-close:hover {
+  background: rgba(0,0,0,0.1);
+  color: #d32f2f;
+}
+
+.help-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.help-body strong {
+  color: #1c2340;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.help-body ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.help-body li {
+  margin-bottom: 8px;
+}
+
+.help-body em {
+  color: #666;
+  font-style: italic;
+  display: block;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e0dad3;
+}
+
+/* Ссылка "Забыли пароль?" (только для авторизации) */
+.forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 0 28px;
+  font-size: 14px;
+}
+.forgot-row a {
+  color: #1c2340;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  position: relative;
+}
+.forgot-row a:hover {
+  color: #e3503e;
+  background: rgba(227, 80, 62, 0.08);
+  transform: translateY(-1px);
+  text-decoration: none;
+  padding: 6px 10px;
+}
+.forgot-row a::after {
+  content: "→";
+  font-size: 12px;
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: all 0.3s ease;
+}
+.forgot-row a:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Чекбокс согласия (только для регистрации) */
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 16px;
+  background: rgba(28, 35, 64, 0.03);
+  border-radius: 6px;
+  border: 1px solid #e0dad3;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: #1c2340;
+  cursor: pointer;
+}
+
+.terms-checkbox label {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.terms-checkbox a {
+  color: #1c2340;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terms-checkbox a:hover {
+  color: #e3503e;
+  text-decoration: underline;
+}
+
+/* Кнопка отправки (общая) */
+.btn-primary {
+  width: 100%;
+  height: 52px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #e3503e 0%, #c23a2a 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 8px 0 20px;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(227, 80, 62, 0.3);
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.7s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #f05a47 0%, #d24432 100%);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 30px rgba(227, 80, 62, 0.4),
+    0 2px 8px rgba(227, 80, 62, 0.2);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(227, 80, 62, 0.3);
+}
+
+/* Вторичные действия (общие) */
+.secondary-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  margin: 28px 0 36px;
+  padding-top: 28px;
+  border-top: 2px solid #e0dad3;
+  gap: 16px;
+}
+.secondary-actions span {
+  color: #555;
+  font-weight: 500;
+}
+.btn-ghost {
+  border-radius: 8px;
+  border: 2px solid #1c2340;
+  background: transparent;
+  padding: 12px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1c2340;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+.btn-ghost::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #1c2340;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+  z-index: 0;
+}
+.btn-ghost span {
+  position: relative;
+  z-index: 1;
+}
+.btn-ghost:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(28, 35, 64, 0.2);
+}
+.btn-ghost:hover::before {
+  transform: scaleX(1);
+}
+.btn-ghost:active {
+  transform: translateY(0);
+}
+
+/* Социальные кнопки (общие) */
+.social-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  font-weight: 700;
+}
+.social-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #e0dad3 0%, transparent 50%, #e0dad3 100%);
+  z-index: 1;
+}
+.social-title span {
+  background: linear-gradient(to bottom, #f8f7f5, #f0edeb);
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+  color: #1c2340;
+}
+
+.social-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-social {
+  flex: 1;
+  min-width: 0;
+  border-radius: 10px;
+  border: none;
+  padding: 14px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  letter-spacing: 0.3px;
+}
+.btn-social::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.7s ease;
+}
+.btn-social:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.btn-social:hover::before {
+  left: 100%;
+}
+.btn-social:active {
+  transform: translateY(-1px);
+}
+.tg { 
+  background: linear-gradient(135deg, #2aabee 0%, #229ED9 100%);
+}
+.vk { 
+  background: linear-gradient(135deg, #0077ff 0%, #0066cc 100%);
+}
+.gg { 
+  background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+}
+.ya { 
+  background: linear-gradient(135deg, #FF0000 0%, #FFCC00 100%);
+}
+
+/* Иконки социальных сетей */
+.social-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 2;
+}
+
+/* Специальная иконка для Яндекс */
+.ya-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF0000 0%, #FFCC00 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 10px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.ya-icon::before {
+  content: "Я";
+  position: relative;
+  z-index: 2;
+}
+
+.ya-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: linear-gradient(135deg, #FFCC00 0%, #FF0000 100%);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card,
+.register-card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.field {
+  animation: fadeIn 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Для авторизации */
+.login-card .field:nth-child(1) { animation-delay: 0.1s; }
+.login-card .field:nth-child(2) { animation-delay: 0.2s; }
+.login-card .forgot-row { animation: fadeIn 0.6s ease-out 0.3s both; }
+.login-card .btn-primary { animation: fadeIn 0.6s ease-out 0.4s both; }
+.login-card .secondary-actions { animation: fadeIn 0.6s ease-out 0.5s both; }
+.login-card .social-title { animation: fadeIn 0.6s ease-out 0.6s both; }
+.login-card .social-row { animation: fadeIn 0.6s ease-out 0.7s both; }
+
+/* Для регистрации */
+.register-card .field:nth-child(1) { animation-delay: 0.1s; }
+.register-card .field:nth-child(2) { animation-delay: 0.2s; }
+.register-card .field:nth-child(3) { animation-delay: 0.3s; }
+.register-card .terms-checkbox { animation: fadeIn 0.6s ease-out 0.4s both; }
+.register-card .btn-primary { animation: fadeIn 0.6s ease-out 0.5s both; }
+.register-card .secondary-actions { animation: fadeIn 0.6s ease-out 0.6s both; }
+.register-card .social-title { animation: fadeIn 0.6s ease-out 0.7s both; }
+.register-card .social-row { animation: fadeIn 0.6s ease-out 0.8s both; }
+
+/* Тёмная тема поддержка */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    color: #e0e0e0;
+  }
+  .login-card,
+  .register-card {
+    background: linear-gradient(to bottom, #2a2a2a, #222);
+    border-color: #444;
+  }
+  .field input {
+    background: #333;
+    color: #fff;
+    border-color: #555;
+  }
+  .field input:focus {
+    border-color: #1c2340;
+    box-shadow: 0 0 0 4px rgba(28, 35, 64, 0.3);
+  }
+}
+
+/* Навигация по клавиатуре */
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible,
+.btn-social:focus-visible,
+.field input:focus-visible,
+.help-button:focus-visible {
+  outline: 3px solid #e3503e;
+  outline-offset: 2px;
+}
+
+/* Медиа-запросы */
+@media (max-width: 1024px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .left-panel {
+    padding: 40px 24px;
+    border-right: none;
+    border-bottom: 2px solid #e0dad3;
+    min-height: 50vh;
+  }
+  .right-panel {
+    padding: 40px 24px;
+    min-height: 50vh;
+  }
+  .login-card,
+  .register-card {
+    padding: 40px 32px;
+    max-width: 500px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .illustration {
+    max-height: 60vh;
+    transform: perspective(1000px) rotateX(5deg);
+  }
+  .illustration:hover {
+    transform: perspective(1000px) rotateX(0deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 20px;
+    height: 60px;
+  }
+  .logo-wrap {
+    font-size: 16px;
+  }
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .page {
+    min-height: auto;
+  }
+  .left-panel {
+    display: flex;
+    padding: 30px 20px;
+    min-height: 40vh;
+  }
+  .right-panel {
+    padding: 30px 20px;
+  }
+  .login-card,
+  .register-card {
+    padding: 32px 24px;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  .login-title,
+  .register-title {
+    font-size: 26px;
+    margin-bottom: 28px;
+  }
+  .field input {
+    height: 48px;
+    padding: 12px 16px;
+  }
+  .btn-primary,
+  .btn-ghost {
+    height: 48px;
+  }
+  .social-row {
+    flex-direction: column;
+  }
+  .btn-social {
+    width: 100%;
+    padding: 12px 16px;
+  }
+  .secondary-actions {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+  .illustration {
+    max-height: 50vh;
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 0 16px;
+  }
+  .left-panel {
+    padding: 24px 16px;
+    min-height: 35vh;
+  }
+  .right-panel {
+    padding: 24px 16px;
+  }
+  .login-card,
+  .register-card {
+    padding: 28px 20px;
+  }
+  .login-title,
+  .register-title {
+    font-size: 22px;
+  }
+  .field label {
+    font-size: 14px;
+  }
+  .field input {
+    font-size: 14px;
+  }
+  .btn-primary,
+  .btn-ghost {
+    font-size: 15px;
+  }
+  .help-content {
+    width: 95%;
+    padding: 20px;
+  }
+}
