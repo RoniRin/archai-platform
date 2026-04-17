@@ -4,7 +4,9 @@ services:
     runtime: node
     repo: https://github.com/RoniRin/archai-platform
     plan: free
-    buildCommand: cd app/backend && npm install
+    buildCommand: |
+      cd app/backend && npm install
+      pip install ezdxf
     startCommand: cd app/backend && node server.js
     envVars:
       - key: DB_USER
